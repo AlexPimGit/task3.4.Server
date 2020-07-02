@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> addUser(User user) {
-        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         if (userDao.addUser(user)) {
             return Optional.of(user);
         }
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> updateUser(User updateUser) {
         if (updateUser.getUserPassword().startsWith("$") || updateUser.getUserPassword().equals("")) {
-            updateUser.setUserPassword(userDao.findByUserEmail(updateUser.getEmail()).getPassword());
+            updateUser.setUserPassword(userDao.findByUserEmail(updateUser.getEmail()).getUserPassword());
         } else {
             updateUser.setUserPassword(bCryptPasswordEncoder.encode(updateUser.getUserPassword()));
         }

@@ -1,14 +1,18 @@
 package by.shurik.preproject.task34.Server.controller;
 
+import by.shurik.preproject.task34.Server.dto.UserDto;
 import by.shurik.preproject.task34.Server.mapper.UserMapper;
 import by.shurik.preproject.task34.Server.model.User;
 import by.shurik.preproject.task34.Server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -23,42 +27,33 @@ public class AdminRestController {
         this.userMapper = userMapper;
     }
 
-//    @PostMapping("/addUser")
-//    public ResponseEntity<?> addUser(@RequestBody UserDto newDtoUser
-//    ) {
-//        if ("".equals(newDtoUser.getName()) ||
-//                "".equals(newDtoUser.getPosition()) ||
-//                "".equals(Integer.toString(newDtoUser.getAge())) ||
-//                "".equals(newDtoUser.getEmail())) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        Optional<User> optionalUser = userService.addUser(userMapper.getUserFromDto(newDtoUser));
-//        if (optionalUser.isPresent()) {
-//            UserDto backUserDto = userMapper.getUserDtoFromUser(optionalUser.get());
-//            return new ResponseEntity<>(backUserDto, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
-//
-//    @PutMapping("/update")
-//    public ResponseEntity<?> updateUser(@RequestBody UserDto updateUserDto) {
-//        Optional<User> optionalUser = userService.updateUser(userMapper.getUserFromDto(updateUserDto));
-//        if (optionalUser.isPresent()) {
-//            UserDto backUserDto = userMapper.getUserDtoFromUser(optionalUser.get());
-//            return new ResponseEntity<>(backUserDto, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>((HttpStatus.BAD_REQUEST));
-//    }
+    @PostMapping(value = "/addUser", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addUser(@RequestBody User newUser) {
+        Optional<?> optionalUser = userService.addUser(newUser);//
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User updateUser) {
+        Optional<?> optionalUser = userService.updateUser(updateUser);//
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>((HttpStatus.OK));
+    }
 
     @GetMapping("/allUsers")
     public List<User> getUsersList() {
         return userService.listUser();
     }
 
-//    @DeleteMapping("/deleteUser/{id}")
-//    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-//        userService.removeUser(id);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @DeleteMapping("/deleteUser/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.removeUser(id);
+
+    }
 
 }

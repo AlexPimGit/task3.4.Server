@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/rest/login", produces = MediaType.APPLICATION_JSON_VALUE)
 //produces = MediaType.APPLICATION_JSON_VALUE говорит, что по умолчанию все методы этого контроллера будут отдавать JSON
+//@RestController - не надо писать @ResponseBody на ответ каждого метода, Каждый метод обработки запроса класса контроллера автоматически сериализует возвращаемые объекты в HttpResponse
 public class LoginRestController {
     private UserService userService;
 
@@ -19,10 +20,8 @@ public class LoginRestController {
     }
 
     @GetMapping("/{email}")
-    public UserDto getById(@PathVariable String email) {
+    public UserDto getByEmail(@PathVariable String email) {
         User user = userService.findByUserEmail(email);
         return new UserDto(user);
-//        return new User(user.getId(), user.getName(), user.getEmail(), user.getPosition(), user.getUserPassword(), user.getRoles().iterator().next().getName());
-
     }
 }
